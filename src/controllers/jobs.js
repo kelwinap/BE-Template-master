@@ -1,7 +1,12 @@
 const Sequelize = require("sequelize");
+const { NOT_FOUND, BAD_REQUEST, OK } = require("../utils/httpStatus");
+const { Profile } = require("../model");
 const Op = Sequelize.Op;
 
 const IN_PROGRESS = "in_progress";
+const CLIENT = "client";
+const BALANCE = "balance";
+const PAID = true;
 
 const getUnpaidJobs = async (req, res) => {
   const { Job, Contract } = req.app.get("models");
@@ -19,11 +24,52 @@ const getUnpaidJobs = async (req, res) => {
     ],
   });
 
-  if (!jobs) return res.status(404).end();
+  if (!jobs) return res.status(NOT_FOUND).end();
 
   res.json(jobs);
 };
 
+const payJob = async (req, res) => {
+  const { Job, Contract } = req.app.get("models");
+  const profile = req.profile;
+  const { job_id } = req.params;
+
+  if (profile.type != CLIENT)
+    return res.status(BAD_REQUEST).send("Contractor can't pay jobs");
+
+  const job = await Job.findOne({
+    where: { id: job_id },
+    include: [
+      {
+        model: Contract,
+        where: { ClientId: profile.id },
+      },
+    ],
+  });
+
+  if (!job) return res.status(BAD_REQUEST).send("Job not found");
+  if (job.paid) return res.status(BAD_REQUEST).send("Job already paid");
+
+  if (job.price > profile.balance)
+    return res.status(BAD_REQUEST).send("Balance not suffient to pay the job");
+
+  await Profile.decrement(BALANCE, {
+    by: job.price,
+    where: { id: job.Contract.ClientId },
+  });
+
+  await Profile.increment(BALANCE, {
+    by: job.price,
+    where: { id: job.Contract.ContractorId },
+  });
+
+  job.paid = PAID;
+  job.save();
+
+  res.status(OK).send("Job payed");
+};
+
 module.exports = {
   getUnpaidJobs,
+  payJob,
 };
