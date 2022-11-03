@@ -64,7 +64,7 @@ const payJob = async (req, res) => {
   });
 
   job.paid = PAID;
-  job.save();
+  await job.save();
 
   res.status(OK).send("Job payed");
 };
