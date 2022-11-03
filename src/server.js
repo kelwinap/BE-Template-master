@@ -8,6 +8,7 @@ app.set("sequelize", sequelize);
 app.set("models", sequelize.models);
 
 const contracts_routes = require("./routes/contracts");
+const jobs_routes = require("./routes/jobs");
 
 init();
 
@@ -17,6 +18,7 @@ async function init() {
       console.log("Express App Listening on Port 3001");
     });
     app.use("/contracts", contracts_routes);
+    app.use("/jobs", jobs_routes);
   } catch (error) {
     console.error(`An error occurred: ${JSON.stringify(error)}`);
     process.exit(1);
