@@ -1,7 +1,9 @@
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-const TERMINATED = "terminated";
+
 const { NOT_FOUND } = require("../utils/httpStatus");
+
+const TERMINATED = "terminated";
 
 const getContract = async (req, res) => {
   const { Contract } = req.app.get("models");
