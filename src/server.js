@@ -10,6 +10,7 @@ app.set("models", sequelize.models);
 const contracts_routes = require("./routes/contracts");
 const jobs_routes = require("./routes/jobs");
 const admin_routes = require("./routes/admin");
+const balances_routes = require("./routes/balances");
 
 init();
 
@@ -21,6 +22,7 @@ async function init() {
     app.use("/contracts", contracts_routes);
     app.use("/jobs", jobs_routes);
     app.use("/admin", admin_routes);
+    app.use("/balances", balances_routes);
   } catch (error) {
     console.error(`An error occurred: ${JSON.stringify(error)}`);
     process.exit(1);
