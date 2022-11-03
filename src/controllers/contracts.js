@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const TERMINATED = "terminated";
+const { NOT_FOUND } = require("../utils/httpStatus");
 
 const getContract = async (req, res) => {
   const { Contract } = req.app.get("models");
@@ -11,7 +12,7 @@ const getContract = async (req, res) => {
     where: { id, ClientId: profileId },
   });
 
-  if (!contract) return res.status(404).end();
+  if (!contract) return res.status(NOT_FOUND).end();
 
   res.json(contract);
 };
@@ -24,7 +25,7 @@ const getContracts = async (req, res) => {
     where: { ClientId: profileId, status: { [Op.not]: TERMINATED } },
   });
 
-  if (!contracts) return res.status(404).end();
+  if (!contracts) return res.status(NOT_FOUND).end();
 
   res.json(contracts);
 };
