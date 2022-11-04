@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const { NOT_FOUND, BAD_REQUEST, OK } = require("../utils/httpStatus");
-const { Profile } = require("../model");
+const { Profile, Job, Contract } = require("../model");
 const Op = Sequelize.Op;
 
 const IN_PROGRESS = "in_progress";
@@ -9,7 +9,6 @@ const BALANCE = "balance";
 const PAID = true;
 
 const getUnpaidJobs = async (req, res) => {
-  const { Job, Contract } = req.app.get("models");
   const profileId = req.profile.id;
 
   const jobs = await Job.findAll({
@@ -24,13 +23,15 @@ const getUnpaidJobs = async (req, res) => {
     ],
   });
 
-  if (!jobs) return res.status(NOT_FOUND).end();
+  if (!jobs) {
+    res.status(NOT_FOUND);
+    return res.end();
+  }
 
   res.json(jobs);
 };
 
 const payJob = async (req, res) => {
-  const { Job, Contract } = req.app.get("models");
   const profile = req.profile;
   const { job_id } = req.params;
 
