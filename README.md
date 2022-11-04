@@ -128,7 +128,7 @@ Thank you and good luck! 🙏
 
 ## Things to improve with more time
 
-Finish unit tests
-Add Integration Tests
-Separate more responsabilities (remove bussiness logic from controller, add services and repositories)
-Refactor code more after tests
+1. Finish unit tests
+1. Add Integration Tests
+1. Separate more responsabilities (remove bussiness logic from 1.controller, add services and repositories)
+1. Refactor code more after tests
