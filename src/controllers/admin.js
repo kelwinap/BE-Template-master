@@ -13,7 +13,7 @@ const getBestProfession = async (req, res) => {
   const bestProfession = await Job.findOne({
     attributes: [
       "Contract.Contractor.profession",
-      [Sequelize.fn("sum", Sequelize.col("price")), "paid"],
+      [Sequelize.fn("sum", Sequelize.col("price")), "amount"],
     ],
     raw: true,
     include: [
@@ -45,10 +45,13 @@ const getBestProfession = async (req, res) => {
       },
     },
     group: ["Contract.Contractor.profession"],
-    order: [["paid", "DESC"]],
+    order: [["amount", "DESC"]],
   });
 
-  if (!bestProfession) return res.status(NOT_FOUND).end();
+  if (!bestProfession) {
+    res.status(NOT_FOUND);
+    return res.end();
+  }
 
   res.json(bestProfession);
 };
@@ -63,7 +66,7 @@ const getBestClients = async (req, res) => {
   const bestClients = await Job.findAll({
     attributes: [
       [Sequelize.col("Contract.Client.id"), "id"],
-      [Sequelize.col("Contract.Client.firstName"), "firstNames"],
+      [Sequelize.col("Contract.Client.firstName"), "firstName"],
       [Sequelize.col("Contract.Client.lastName"), "lastName"],
       [Sequelize.fn("sum", Sequelize.col("price")), "paid"],
     ],
@@ -101,7 +104,10 @@ const getBestClients = async (req, res) => {
     order: [["id", "ASC"]],
   });
 
-  if (!bestClients) return res.status(NOT_FOUND).end();
+  if (!bestClients) {
+    res.status(NOT_FOUND);
+    return res.end();
+  }
 
   res.json(bestClients);
 
