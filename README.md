@@ -124,3 +124,11 @@ When you have finished the assignment, create a github repository and send us th
   
 
 Thank you and good luck! 🙏
+
+
+## Things to improve with more time
+
+Finish unit tests
+Add Integration Tests
+Separate more responsabilities (remove bussiness logic from controller, add services and repositories)
+Refactor code more after tests
